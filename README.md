@@ -1,0 +1,1 @@
+These two transformations can be used to edit EAD source files.  Similar types of EAD-2-EAD transformations will be added later.
