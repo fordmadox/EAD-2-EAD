@@ -28,33 +28,40 @@
         match="
             ead:unittitle/ead:emph[@render = 'bold']
             | ead:titleproper/ead:emph[@render = 'bold']">
-        <xsl:if test="$remove-bolded-titles eq true()">
-            <xsl:apply-templates select="node()"/>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="$remove-bolded-titles = true()">
+                <xsl:apply-templates select="node()"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="ead:archdesc/ead:did">
         <xsl:copy>
-            <xsl:apply-templates select="@*|node()"/>
+            <xsl:apply-templates select="@* | node()"/>
             <xsl:if
                 test="
-                $add-default-collection-title-if-missing eq true()
-                and not(ead:unittitle[normalize-space()])">
+                    $add-default-collection-title-if-missing = true()
+                    and not(ead:unittitle[normalize-space()])">
                 <xsl:element name="unittitle" namespace="urn:isbn:1-931666-22-9">
                     <xsl:text>***Untitled Collection***</xsl:text>
                 </xsl:element>
             </xsl:if>
             <xsl:if
                 test="
-                $add-default-collection-date-if-missing eq true()
-                and not(ead:unitdate[normalize-space()])">
+                    $add-default-collection-date-if-missing = true()
+                    and not(ead:unitdate[normalize-space()])">
                 <xsl:element name="unitdate" namespace="urn:isbn:1-931666-22-9">
                     <xsl:text>***Undated Collection***</xsl:text>
                 </xsl:element>
             </xsl:if>
             <xsl:if
                 test="
-                    $add-default-collection-extent-if-missing eq true()
+                    $add-default-collection-extent-if-missing = true()
                     and not(ead:physdesc/ead:extent)">
                 <xsl:element name="physdesc" namespace="urn:isbn:1-931666-22-9">
                     <xsl:element name="extent" namespace="urn:isbn:1-931666-22-9">
@@ -81,12 +88,6 @@
             </xsl:copy>
         </xsl:if>
     </xsl:template>
-
-    <!--
-    <xsl:template match="text()">
-        <xsl:value-of select="normalize-unicode(.)"/>
-    </xsl:template>
-    -->
 
     <xsl:template match="ead:extent[@type]">
         <xsl:copy>
