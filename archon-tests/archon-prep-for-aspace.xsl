@@ -79,7 +79,7 @@
             and not(descendant::ead:unitdate[normalize-space()])
             and not(descendant::ead:unitdate/@normal)
             ]">
-        <xsl:if test="$add-default-titles-if-missing eq true()">
+        <xsl:if test="$add-default-titles-if-missing = true()">
             <xsl:copy>
                 <xsl:apply-templates select="@* | node()"/>
                 <xsl:element name="unittitle" namespace="urn:isbn:1-931666-22-9">
