@@ -91,8 +91,24 @@
 
     <xsl:template match="ead:extent[@type]">
         <xsl:copy>
-            <xsl:apply-templates select="@* | node()"/>
-            <xsl:value-of select="concat(' ', @type)"/>
+            <xsl:choose>
+                <xsl:when test="not(normalize-space(.))">
+                    <xsl:apply-templates select="@* | node()"/>
+                    <xsl:value-of select="@type"/>
+                </xsl:when>
+                <xsl:when test="matches(normalize-space(.), '^\D')
+                    or
+                    matches(normalize-space(.), '^\d') and not(contains(normalize-space(.), ' '))">
+                    <xsl:apply-templates select="@* | node()"/>
+                    <xsl:value-of select="concat(' ', @type)"/>
+                </xsl:when>
+                <!-- 
+                type="Boxes">3</extent>
+                -->
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
         </xsl:copy>
     </xsl:template>
 
